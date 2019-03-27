@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LyricEffect : MonoBehaviour {
+public class LyricEffect {
 
     private Vector3 _lyricsPosition;
     private GameObject _lyricsObject;
@@ -27,5 +27,4 @@ public class LyricEffect : MonoBehaviour {
     {
         return GameObject.Find("[" + sceneNumber + "]" + "Scene" + "/" + "Lyrics");
     }
-
 }

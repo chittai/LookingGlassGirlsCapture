@@ -47,6 +47,32 @@ public class SceneDisplayManager
 
     }
 
+    
+    public void PreviewDisplayScene(SceneInformation si)
+    {
+        centerObject = GameObject.Find("Center");
+        holoCaptures = GetChildrenFromGameObject("HoloPlayCaptures");
+        holoCamera = new HoloCamera();
+
+        foreach (GameObject hc in holoCaptures)
+        {
+            hc.SetActive(false);
+        }
+
+        ChangeCharacterAngleInPreview(si.SceneNumber - 1);
+
+        holoCamera.RotationYAxis(centerObject, si.SceneNumber - 1);
+
+        lyricEffect.DisplayLyrics(si.SceneNumber, si.SceneLyrics);
+    }
+
+
+    private void ChangeCharacterAngleInPreview(int nextSceneNumber)
+    {
+        holoCaptures[nextSceneNumber].SetActive(true);
+    }
+
+
     /// <summary>
     /// キャラクターを写すHoloPlayCaptureを切り替える
     /// </summary>
