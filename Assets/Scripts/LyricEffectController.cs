@@ -27,4 +27,5 @@ public class LyricEffect {
     {
         return GameObject.Find("[" + sceneNumber + "]" + "Scene" + "/" + "Lyrics");
     }
+
 }
