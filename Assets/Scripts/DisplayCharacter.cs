@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class DisplayCharacter {
 
@@ -22,15 +21,19 @@ public class DisplayCharacter {
     /// <param name="previousSceneNumber"></param>
     public void DeActivateCharacter()
     {
-        holoCaptures = GetChildrenFromGameObject("HoloPlayCaptures");
-
-
+        holoCaptures = GetGameObjectUtility.GetChildrenFromParent("HoloPlayCaptures", "HoloPlay Capture");
         foreach (GameObject hc in holoCaptures)
         {
             hc.SetActive(false);
         }
     }
 
+    /// <summary>
+    /// 前のシーンのモデルを消して、新しいシーンのモデルを表示する
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="previousSceneNumber"></param>
+    /// <param name="nextSceneNumber"></param>
     public void ChangeCharacter(List<GameObject> list, int previousSceneNumber,int nextSceneNumber)
     {
         if (previousSceneNumber != -1)
@@ -38,19 +41,4 @@ public class DisplayCharacter {
 
         list[nextSceneNumber].SetActive(true);
     }
-
-    public List<GameObject> GetChildrenFromGameObject(string parentName)
-    {
-        var parent = GameObject.Find(parentName) as GameObject;
-        var transforms = parent.GetComponentsInChildren(typeof(Transform), true);
-        var gameObjects = transforms.Where(t => t.name.Contains("HoloPlay Capture")).Select(t => t.gameObject).ToList();
-
-        foreach (Transform t in transforms)
-        {
-            Debug.Log("gameobject : " + t.name);
-        }
-
-        return gameObjects;
-    }
-
 }

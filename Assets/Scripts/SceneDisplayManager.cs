@@ -29,11 +29,10 @@ public class SceneDisplayManager
         {
             centerObject = GameObject.Find("Center");
             displayCharacter = new DisplayCharacter();
-            holoCaptures = displayCharacter.GetChildrenFromGameObject("HoloPlayCaptures");
+            holoCaptures = GetGameObjectUtility.GetChildrenFromParent("HoloPlayCaptures", "HoloPlay Capture");
             
             holoCamera = new HoloCamera();
 ;
-
             isFirstRun = false;
         }
 
@@ -43,22 +42,20 @@ public class SceneDisplayManager
             listIndex++;
             doneSelectHoloplayCap = false;
         }
-
+        
+        var nextSceneNumber = list[listIndex].SceneNumber - 1;
         if (!doneSelectHoloplayCap)
         {
-            //ChangeCharacterAngle(previousSceneNumber, list[listIndex].SceneNumber - 1);
-            var nextSceneNumber = list[listIndex].SceneNumber - 1;
             displayCharacter.ChangeCharacter(holoCaptures, previousSceneNumber, nextSceneNumber);
 
             this.previousSceneNumber = nextSceneNumber;
             doneSelectHoloplayCap = true;
-
         }
 
-        holoCamera.RotationYAxis(centerObject, list[listIndex].SceneNumber - 1);
+        holoCamera.RotationYAxis(centerObject, nextSceneNumber);
 
-        lyricEffect.DisplayLyrics(list[listIndex].SceneNumber, list[listIndex].SceneLyrics);
-
+        nextSceneNumber = list[listIndex].SceneNumber;
+        lyricEffect.DisplayLyrics(nextSceneNumber, list[listIndex].SceneLyrics);
     }
 
     /// <summary>

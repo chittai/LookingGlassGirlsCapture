@@ -19,6 +19,7 @@ public class GetGameObjectUtility {
         return transforms.Where(t => t.name.Contains(childrenName)).Select(t => t.gameObject).ToList();
     }
 
+    /*
     public static List<GameObject> GetChildrenFromParent(string parentName)
     {
         var parent = GameObject.Find(parentName) as GameObject;
@@ -26,5 +27,6 @@ public class GetGameObjectUtility {
         
         return transforms.Select(t => t.gameObject).ToList();
     }
+    */
 
 }
