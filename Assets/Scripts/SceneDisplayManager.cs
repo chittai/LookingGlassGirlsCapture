@@ -15,16 +15,24 @@ public class SceneDisplayManager
     private List<GameObject> holoCaptures;
 
     private HoloCamera holoCamera;
+    private DisplayCharacter displayCharacter;
 
+    /// <summary>
+    /// 経過した時間によって、写し出すシーンを変更する
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="elapsedTime"></param>
     public void DisplayScene(List<SceneInformation> list, double elapsedTime)
     {
         // Initialize
         if (isFirstRun)
         {
             centerObject = GameObject.Find("Center");
-            holoCaptures = GetChildrenFromGameObject("HoloPlayCaptures");
-
+            displayCharacter = new DisplayCharacter();
+            holoCaptures = displayCharacter.GetChildrenFromGameObject("HoloPlayCaptures");
+            
             holoCamera = new HoloCamera();
+;
 
             isFirstRun = false;
         }
@@ -38,7 +46,13 @@ public class SceneDisplayManager
 
         if (!doneSelectHoloplayCap)
         {
-            ChangeCharacterAngle(previousSceneNumber, list[listIndex].SceneNumber - 1);
+            //ChangeCharacterAngle(previousSceneNumber, list[listIndex].SceneNumber - 1);
+            var nextSceneNumber = list[listIndex].SceneNumber - 1;
+            displayCharacter.ChangeCharacter(holoCaptures, previousSceneNumber, nextSceneNumber);
+
+            this.previousSceneNumber = nextSceneNumber;
+            doneSelectHoloplayCap = true;
+
         }
 
         holoCamera.RotationYAxis(centerObject, list[listIndex].SceneNumber - 1);
@@ -47,60 +61,26 @@ public class SceneDisplayManager
 
     }
 
-    
+    /// <summary>
+    /// Previewボタンを押すと各シーンの確認ができる
+    /// </summary>
+    /// <param name="si"></param>
     public void PreviewDisplayScene(SceneInformation si)
     {
         centerObject = GameObject.Find("Center");
-        holoCaptures = GetChildrenFromGameObject("HoloPlayCaptures");
         holoCamera = new HoloCamera();
+        displayCharacter = new DisplayCharacter();
 
-        foreach (GameObject hc in holoCaptures)
-        {
-            hc.SetActive(false);
-        }
+        // HoloCaptures[0(activateSceneNumberIndex)] = [1]Scene(in Hierarcy) 
+        var activateSceneNumberIndex = si.SceneNumber - 1;
+        displayCharacter.DeActivateCharacter();
+        displayCharacter.ActivateCharacter(activateSceneNumberIndex);
 
-        ChangeCharacterAngleInPreview(si.SceneNumber - 1);
+        // SceneInformationList[0(activateSceneNumberIndex)] = [1]Scene(in Hierarcy) 
+        holoCamera.RotationYAxis(centerObject, activateSceneNumberIndex);
 
-        holoCamera.RotationYAxis(centerObject, si.SceneNumber - 1);
-
-        lyricEffect.DisplayLyrics(si.SceneNumber, si.SceneLyrics);
-    }
-
-
-    private void ChangeCharacterAngleInPreview(int nextSceneNumber)
-    {
-        holoCaptures[nextSceneNumber].SetActive(true);
-    }
-
-
-    /// <summary>
-    /// キャラクターを写すHoloPlayCaptureを切り替える
-    /// </summary>
-    /// <param name="previousSceneNumber"></param>
-    /// <param name="nextSceneNumber"></param>
-    private void ChangeCharacterAngle(int previousSceneNumber, int nextSceneNumber)
-    {
-
-        if (previousSceneNumber != -1)
-            holoCaptures[previousSceneNumber].SetActive(false);
-
-        holoCaptures[nextSceneNumber].SetActive(true);
-
-        this.previousSceneNumber = nextSceneNumber;
-        doneSelectHoloplayCap = true;
-    }
-
-    /// <summary>
-    /// parentNameで指定したオブジェクトの子のtransformを取得する
-    /// </summary>
-    /// <param name="parentName"></param>
-    /// <returns></returns>
-    private List<GameObject> GetChildrenFromGameObject(string parentName)
-    {
-        var parent = GameObject.Find(parentName) as GameObject;
-        var transforms = parent.GetComponentsInChildren(typeof(Transform), true);
-        var gameObjects = transforms.Where(t => t.name.Contains("HoloPlay Capture")).Select(t => t.gameObject).ToList();
-
-        return gameObjects;
+        // SceneInformationList[0] = [1(activateSceneNumber)]Scene(in Hierarcy) 
+        var activateSceneNumber = si.SceneNumber;
+        lyricEffect.DisplayLyrics(activateSceneNumber, si.SceneLyrics);
     }
 }
