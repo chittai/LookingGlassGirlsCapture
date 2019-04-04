@@ -12,6 +12,7 @@ public class SceneDisplayManager
     private bool doneSelectHoloplayCap;
 
     private bool isFirstRun = true;
+    private bool hasScene = true;
     private List<GameObject> holoCaptures;
 
     private HoloCamera holoCamera;
@@ -30,19 +31,25 @@ public class SceneDisplayManager
             centerObject = GameObject.Find("Center");
             displayCharacter = new DisplayCharacter();
             holoCaptures = GetGameObjectUtility.GetChildrenFromParent("HoloPlayCaptures", "HoloPlay Capture");
-            
+
             holoCamera = new HoloCamera();
-;
+            
             isFirstRun = false;
         }
 
         // シーンの切り替え
-        if (list[listIndex].EndTime <= elapsedTime)
+        if (list[listIndex] != null && list[listIndex].EndTime <= elapsedTime)
         {
             listIndex++;
             doneSelectHoloplayCap = false;
         }
-        
+
+        if (list[listIndex] == null)
+        {
+            Debug.Log("最後のシーンまで行きました。");
+            return;
+        }
+
         var nextSceneNumber = list[listIndex].SceneNumber - 1;
         if (!doneSelectHoloplayCap)
         {

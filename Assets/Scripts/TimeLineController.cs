@@ -27,6 +27,7 @@ public class TimeLineController : MonoBehaviour, ITimeControl
     {
         this.sceneInformationList = GameObject.Find("SceneInformationList").GetComponent<SceneInformationList>().sceneInformationList;
         this.sceneInformationList.OrderBy(i => i.EndTime);
+        this.sceneInformationList.Add(null);
 
         sceneDisplayManager = new SceneDisplayManager();
     }
