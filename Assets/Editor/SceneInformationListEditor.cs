@@ -28,6 +28,9 @@ public class SceneInformationListEditor : Editor
         defaultColor = GUI.backgroundColor;
     }
 
+    /// <summary>
+    /// Inspectorの拡張
+    /// </summary>
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
